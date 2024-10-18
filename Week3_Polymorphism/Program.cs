@@ -108,7 +108,46 @@ namespace Week3_Polymorphism
                         break;
 
                         case 4:
-                        //to do this
+                        //calculate the volume for all the shapes
+
+                        //Circle has no FindVolume()
+                        //Sphere & cylinder they both have FindVolume()
+
+
+                        //List >>>> c1, c2, s1, s2, cy1
+                        foreach (var s in shapes)
+                        {
+                            if (s.GetType() == typeof(Circle))
+                            {
+                                Console.WriteLine($"{s.GetType().Name} doesn't have a Volume");
+                            }
+                            else
+                            {
+                                if (s.GetType() == typeof(Sphere))
+                                {
+                                    Sphere sp = (Sphere)s;
+                                    Console.WriteLine($"Volume of {sp.GetType().Name} with radius {sp.Radius}: {sp.FindVolume()}");
+                                }
+                                else
+                                {
+                                    Cylinder cy = (Cylinder)s; 
+                                    Console.WriteLine($"Volume of {cy.GetType().Name} with radius {cy.Radius} and height {cy.Height}: {cy.FindVolume()}");
+                                }
+                                 //typecasting //a different type of conversion 
+                                                        //We cannot apply Convert.ToSphere because it does not exist
+                            }
+
+                           
+                            Console.WriteLine();
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Hit any key to continue back to the main menu");
+                        Console.ReadKey();
+
+
+
+
                         break;
 
                          case 5:
