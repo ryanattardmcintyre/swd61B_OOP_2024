@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week3_Polymorphism", "Week3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week3_AbstractClassesAndInterfaces", "Week3_AbstractClassesAndInterfaces\Week3_AbstractClassesAndInterfaces.csproj", "{91FD6F56-65F6-438B-B6AA-E8938B0C770F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week4_AbstractInterfacesWorksheet6", "Week4_AbstractInterfacesWorksheet6\Week4_AbstractInterfacesWorksheet6.csproj", "{CAC43C92-F8B0-4A08-8766-1B6D9DCA43BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Week4_ClassRelationships", "Week4_ClassRelationships\Week4_ClassRelationships.csproj", "{0D96D42F-4F2A-4B4A-B620-A06CEDE37348}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{91FD6F56-65F6-438B-B6AA-E8938B0C770F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91FD6F56-65F6-438B-B6AA-E8938B0C770F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91FD6F56-65F6-438B-B6AA-E8938B0C770F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAC43C92-F8B0-4A08-8766-1B6D9DCA43BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAC43C92-F8B0-4A08-8766-1B6D9DCA43BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAC43C92-F8B0-4A08-8766-1B6D9DCA43BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAC43C92-F8B0-4A08-8766-1B6D9DCA43BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D96D42F-4F2A-4B4A-B620-A06CEDE37348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D96D42F-4F2A-4B4A-B620-A06CEDE37348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D96D42F-4F2A-4B4A-B620-A06CEDE37348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D96D42F-4F2A-4B4A-B620-A06CEDE37348}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
