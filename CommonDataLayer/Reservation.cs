@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -9,12 +10,14 @@ namespace CommonDataLayer
 {
     public class Reservation
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
 
         [ForeignKey("Member")]
         public string UsernameFK { get; set; }
-        public Member Member { get; set; }
+        public virtual Member Member { get; set; }
 
         [ForeignKey("Book")]
         public int BookFK { get; set; }
