@@ -20,8 +20,9 @@ namespace CommonDataLayer
     {
         //when you declare a property with the name Id, this is taken eventually 
         //automatically as the primary key
-        
+
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Isbn { get; set; }
         public string Title { get; set; }   
         public string Author { get; set; }
