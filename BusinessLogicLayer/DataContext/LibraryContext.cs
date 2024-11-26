@@ -29,5 +29,9 @@ namespace BusinessLogicLayer.DataContext
             : base(options)
         {
         }
+
+
+        //to do: LazyLoading ....it loads the data you need in the navigational properties automatically
+
     }
 }

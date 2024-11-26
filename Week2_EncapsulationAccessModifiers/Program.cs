@@ -51,7 +51,7 @@ Student s1 = new Student();
 s1.FirstName = "Joe";
 
 
-Student s2 = new Student();
+Student s3 = new Student();
 s2.FirstName = "Jane";
 
 s2 = s1;
