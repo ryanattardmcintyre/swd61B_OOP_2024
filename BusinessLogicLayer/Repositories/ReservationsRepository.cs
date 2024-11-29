@@ -29,9 +29,12 @@ namespace BusinessLogicLayer.Repositories
             //           join b in _context.Books
             //           on r.BookFK equals b.Isbn
             //           where r.UsernameFK == username
-            //           select r;
+            //           select new {
+            //            Reservation = r,
+            //            BookTitle = b.Title
+            //             };
 
-            return _context.Reservations.Where(x=>x.UsernameFK== username).ToList();
+           return _context.Reservations.Where(x=>x.UsernameFK== username).ToList();
         }
 
 

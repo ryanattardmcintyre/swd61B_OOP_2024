@@ -215,6 +215,9 @@ namespace PresenationConsoleApp
                             break;
 
                         case 2: //Reservations
+
+                            //1.  //Get No. Of Reservations For All Members, Grouped By Category, sorted by the highest one
+
                             break;
 
                         case 3: //Members
@@ -223,7 +226,7 @@ namespace PresenationConsoleApp
                             Console.WriteLine("2. Register new member");
                             Console.WriteLine("3. Get Reservations For Member");
                             Console.WriteLine("4. Get No. Of Reservations For Member, Grouped By Category, sorted by the highest one");
-                            Console.WriteLine("5. Get Reservations Per Month For a member");
+                            Console.WriteLine("5. Get No. Of Reservations Per Month For a member");
                             Console.WriteLine("6. Borrow a book");
                             
                             int case3MenuChoice = Convert.ToInt32(Console.ReadLine());
@@ -289,10 +292,13 @@ namespace PresenationConsoleApp
                                         var reservations = myReservationsRepository.GetReservations(username_global);
 
                                         //Timestamp | Book Isbn | Book Name | Duration
+                                        Console.WriteLine($"Date\t\tIsbn\tBook Name\t\tDuration");
+                                        Console.WriteLine("=========================================================");
+                                        Console.WriteLine();
                                         foreach (var reservation in reservations)
                                         { //26/11/2024 11:20:50:34567
                                             Console.WriteLine($"{reservation.From.ToString("dd/MM/yyyy")} " +
-                                                $"\t{reservation.BookFK}\t{reservation.Book.Title}\t{reservation.Days} days");
+                                                $"\t\t{reservation.BookFK}\t{reservation.Book.Title}\t\t{reservation.Days} days");
                                         }
                                     }
                                    
@@ -300,7 +306,57 @@ namespace PresenationConsoleApp
                                     Console.ReadKey();
                                     break;
 
-                                case 4: break;
+                                case 4:
+                                    Console.Clear();
+
+                                    if (username_global == "")
+                                    {
+                                        Console.WriteLine("Access denied");
+                                    }
+                                    else
+                                    {
+                                        //Get No. Of Reservations For Member, Grouped By Category, sorted by the highest one
+
+                                        //1. first we get a list of reservations and filtered by username
+                                        List<Reservation> reservations = myReservationsRepository.GetReservations(username_global);
+                                        //output of reservations list = Id	UsernameFK	BookFK	From	Days
+                                        //4   ryana   10001   2024 - 01 - 02 00:00:00.0000000 5
+                                        //5   ryana   10003   2024 - 01 - 10 00:00:00.0000000 7
+
+                                        //2. since we needed to group category to output the occurrences for each category, a
+                                        //   a GroupBy has to be called.
+                                        //   In the GroupBy you need to specify the columns by which 
+                                        //  - to group i.e. CategoryFk
+                                        //  - to show on screen i.e. CategoryTitle
+
+                                        //e.g. of output data
+                                        // Categoryid | Category Title | Reservations Count
+                                        // 10 | Fiction | 3
+
+                                           List<ViewModel> output = reservations.GroupBy(x => new
+                                            {
+                                                CategoryId = x.Book.CategoryFK, //grouping by the Category
+                                                CategoryTitle = x.Book.Category.Name
+                                            }) //Select is used to specify what to return
+                                            .Select(x => new //to create a ViewModel
+                                            {
+                                                CategoryId = x.Key.CategoryId,
+                                                CategoryTitle = x.Key.CategoryTitle,
+                                                Total = x.Count()
+                                            }).OrderByDescending(x => x.Total);
+
+                                    }
+
+
+                                    foreach (var item in output )
+                                    {
+
+                                    }
+
+
+                                    Console.WriteLine("Press a key to continue...");
+                                    Console.ReadKey();
+                                    break;
                                 case 5: break;
                                 case 6: //borrowing a book
                                     Console.Clear();

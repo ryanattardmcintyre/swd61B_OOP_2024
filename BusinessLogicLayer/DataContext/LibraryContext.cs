@@ -31,6 +31,16 @@ namespace BusinessLogicLayer.DataContext
         }
 
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            //lazy loading is a setting we are activating so that when you'd like to access data in other tables connected via 
+            //a foreign key (in C# terms: a naviational property), you need not code inner join statements, but you can simply
+            //access the property and its values as if you are dealing with normal classes
+
+            optionsBuilder.UseLazyLoadingProxies();
+        }
+
+
         //to do: LazyLoading ....it loads the data you need in the navigational properties automatically
 
     }
