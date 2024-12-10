@@ -1,7 +1,9 @@
 ﻿using BusinessLogicLayer.DataContext;
 using BusinessLogicLayer.Repositories;
 using CommonDataLayer;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using PresenationConsoleApp.ViewModels;
 
 namespace PresenationConsoleApp
 {
@@ -200,11 +202,37 @@ namespace PresenationConsoleApp
                                 case 6: //Delete
 
                                     Console.WriteLine("Input book isbn to delete");
-                                    int isbn = Convert.ToInt32(Console.ReadLine());
 
-                                    myBooksRepository.DeleteBook(isbn);
+                                    try //inside the try clause you place code that might throw an error
+                                    {
+                                        int isbn = Convert.ToInt32(Console.ReadLine());
+                                        //format exception e.g. inputting a letter instead of numbers
+                                        //outofrange exception e.g. if we input a number so big that it doesnt fit in to the range of Int32
 
-                                    Console.WriteLine("Book has been deleted");
+                                        myBooksRepository.DeleteBook(isbn);
+                                        //SqlException e.g. losing connection to the database
+                                        //SqlException e.g. it tries to delete a book which doesnt exist
+                                        
+                                        Console.WriteLine("Book has been deleted");
+                                    }
+                                    catch(SqlException ex)
+                                    {
+                                        Console.WriteLine("Isbn doesn't exist or connection might have been lost. try again");
+                                        Console.WriteLine(ex.Message); //even though this is not ideal; ideally we log only the errors
+                                    }
+                                    catch(FormatException ex)
+                                    {
+                                        Console.WriteLine("Do not input letters. Only integers are accepted");
+                                        Console.WriteLine(ex.Message);
+                                    }
+                                    catch //handle the exception in the catch
+                                    {
+                                        Console.WriteLine("input unacceptable. Please retry by going back to the main menu");
+                                    }
+                                    finally //this is executed always error and no error
+                                    {
+                                        Console.WriteLine("Your inputs have been logged. if there was a problem we're working on it");
+                                    }
 
                                     Console.WriteLine("Press a key to continue back to the previous menu");
                                     Console.ReadKey();
@@ -215,8 +243,118 @@ namespace PresenationConsoleApp
                             break;
 
                         case 2: //Reservations
+                            //to do:
+                            Console.Clear();
+                            Console.WriteLine("1. Get No. Of Reservations For all Members, Grouped By Category, sorted by the highest one");
+                            Console.WriteLine("2. Get No. Of Reservations For All members Per Month  ");
+                            Console.WriteLine("3. Get Avg. No Of Reservations Per Month/ Per Year");
+                            Console.WriteLine("4. Get No Of Reservations by book, displaying the most borrowed book first");
+                            Console.WriteLine("5. Get Top 5 Books Borrowed the most showing No Of Reservations per book");
+                            Console.WriteLine("select one of the above");
+                            int case2_Choice = Convert.ToInt32(Console.ReadLine());
 
-                            //1.  //Get No. Of Reservations For All Members, Grouped By Category, sorted by the highest one
+                            switch(case2_Choice)
+                            {
+                                case 1: //1.  Get No. Of Reservations For all Members, Grouped By Category, sorted by the highest one
+                                    //a) get all reservations
+                                    var case2_list = myReservationsRepository.GetReservations();
+
+                                    //b) execute the following code
+                                    // No. Of Reseravations | Category name
+                                    var output = case2_list.GroupBy(x => new
+                                    {
+                                        CategoryId = x.Book.CategoryFK, //grouping by the Category
+                                        CategoryTitle = x.Book.Category.Name
+                                    }) 
+                                             .Select(x => new //Select is used to specify what to return
+                                             {
+                                                 CategoryId = x.Key.CategoryId,
+                                                 CategoryName = x.Key.CategoryTitle,
+                                                 Total = x.Count() //no of reservations per category for the logged in user
+                                             }).OrderByDescending(x => x.Total) //sorting it in descending mode by the count
+                                             .ToList();
+
+                                    //c) show the grouped by data on screen
+                                    Console.WriteLine("Category Id\t\t\tCategory Title\t\t\t No. Of Reservations");
+                                    Console.WriteLine();
+                                    foreach (var item in output) //is of type List of Case4_CategoriesTotalViewModel
+                                    {
+                                        Console.WriteLine($"{item.CategoryId}\t\t\t{item.CategoryName}\t\t\t{item.Total}");
+                                    }
+
+                                    Console.WriteLine("Press a key to continue...");
+                                    Console.ReadKey();
+                                break;
+                                case 2: //2.  Get No. Of Reservations For All members Per Month  
+
+                                    //a) get all reservations
+                                    List<Reservation> case2_reservations = myReservationsRepository.GetReservations();
+
+                                   //b) remains the same however change the list name to refer to the one in a)
+                                    var myList = case2_reservations.GroupBy(x => x.From.ToString("MMMM")).Select(x =>
+                                            new //without a type i.e. an anonymous type
+                                            {
+                                                MonthName = x.Key, //these are properties declared on the fly
+                                                Total = x.Count()
+                                            }
+                                    );
+                                    //c) remains the same
+                                    Console.WriteLine("Month\t\t\t\tTotal Reservations");
+                                    foreach (var item in myList)
+                                    {
+                                        Console.WriteLine($"{item.MonthName}\t\t\t\t{item.Total}");
+                                    }
+ 
+                                    Console.WriteLine("Press a key to continue...");
+                                    Console.ReadKey();
+
+                            break;
+                                case 3:// Get Avg. No Of Reservations Per Month/ Per Year (hint: use Average() instead of Count()
+                                    //a) get all reservations
+                                    var case3_list = myReservationsRepository.GetReservations();
+
+                                    //b) group by per month & find avg based on the year
+                                    var case3_output = case3_list.GroupBy(x => x.From.ToString("MMMM")).Select(x =>
+                                            new //without a type i.e. an anonymous type
+                                            {
+                                                MonthName = x.Key, //these are properties declared on the fly
+                                                Average = x.Average(y=>y.From.Year)
+                                            }
+                                    );
+
+                                    //December 2023 -> 5 reservations
+                                    //December 2024 -> 10 reservations
+                                    //December 2022 -> 15 reservations
+
+                                    //Month name | Avg Reservations
+                                    //December   | 10 reservations
+
+
+                                    //c) display the results
+                                    Console.WriteLine("Month\t\t\t\t Avg Reservations");
+                                    foreach (var item in case3_output)
+                                    {
+                                        Console.WriteLine($"{item.MonthName}\t\t\t\t{item.Average}");
+                                    }
+
+                                    Console.WriteLine("Press a key to continue...");
+                                    Console.ReadKey();
+
+
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
+                                    break;
+                            }
+
+
+
+                            //1.  Get No. Of Reservations For all Members, Grouped By Category, sorted by the highest one
+                            //2.  Get No. Of Reservations For All members Per Month  
+                            //3.  Get Avg. No Of Reservations Per Month/ Per Year (hint: use Average() instead of Count()
+                            //4.  Get No Of Reservations by book, displaying the most borrowed book first
+                            //5.  Get Top 5 Books Borrowed the most showing No Of Reservations per book
 
                             break;
 
@@ -333,31 +471,76 @@ namespace PresenationConsoleApp
                                         // Categoryid | Category Title | Reservations Count
                                         // 10 | Fiction | 3
 
-                                           List<ViewModel> output = reservations.GroupBy(x => new
-                                            {
-                                                CategoryId = x.Book.CategoryFK, //grouping by the Category
-                                                CategoryTitle = x.Book.Category.Name
-                                            }) //Select is used to specify what to return
-                                            .Select(x => new //to create a ViewModel
-                                            {
-                                                CategoryId = x.Key.CategoryId,
-                                                CategoryTitle = x.Key.CategoryTitle,
-                                                Total = x.Count()
-                                            }).OrderByDescending(x => x.Total);
 
+                                        //note:
+                                        //1 in order to be able to traverse the list and display all the records one by one, of something which doesn't exist yet
+                                        //  e.g. a class which includes CategoryId, CategoryTitle, Total
+                                        //2. these kind of classes serve only to display the data clearly on the UI (the screen)
+                                        //-> we call them ViewModels
+
+                                        var output = reservations.GroupBy(x => new
+                                        {
+                                            CategoryId = x.Book.CategoryFK, //grouping by the Category
+                                            CategoryTitle = x.Book.Category.Name
+                                        }) //Select is used to specify what to return
+                                               .Select(x => new Case4_CategoriesTotalViewModel
+                                               {
+                                                   CategoryId = x.Key.CategoryId,
+                                                   CategoryName = x.Key.CategoryTitle,
+                                                   Total = x.Count() //no of reservations per category for the logged in user
+                                               }).OrderByDescending(x => x.Total) //sorting it in descending mode by the count
+                                               .ToList();
+
+
+                                        Console.WriteLine("Category Id\t\t\tCategory Title\t\t\t No. Of Reservations");
+                                        Console.WriteLine();
+                                        foreach (var item in output) //is of type List of Case4_CategoriesTotalViewModel
+                                        {
+                                            Console.WriteLine($"{item.CategoryId}\t\t\t{item.CategoryName}\t\t\t{item.Total}");
+                                        }
                                     }
-
-
-                                    foreach (var item in output )
-                                    {
-
-                                    }
-
 
                                     Console.WriteLine("Press a key to continue...");
                                     Console.ReadKey();
                                     break;
-                                case 5: break;
+                                case 5:
+
+                                    // Get No. Of Reservations Per Month For a member
+
+                                    //a) get the reservations in a list for the logged in member
+                                    //b) groupby by month
+                                    //c) see how to display on screen
+
+                                    if (username_global == "")
+                                    {
+                                        Console.WriteLine("Access denied");
+                                    }
+                                    else
+                                    {
+                                        //a)
+                                        List<Reservation> reservations = myReservationsRepository.GetReservations(username_global);
+
+                                        //b)
+                                        var myList = reservations.GroupBy(x => x.From.ToString("MMMM")).Select(x =>
+                                                new //without a type i.e. an anonymous type
+                                                {
+                                                    MonthName = x.Key, //these are properties declared on the fly
+                                                    Total = x.Count()
+                                                }
+                                        );
+
+                                        Console.WriteLine("Month\t\t\t\tTotal Reservations");
+                                        foreach (var item in myList)
+                                        {
+                                            Console.WriteLine($"{item.MonthName}\t\t\t\t{item.Total}");
+                                        }
+
+
+                                    }
+                                    Console.WriteLine("Press a key to continue...");
+                                    Console.ReadKey();
+                                    break;
+                                
                                 case 6: //borrowing a book
                                     Console.Clear();
 
