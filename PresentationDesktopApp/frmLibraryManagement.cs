@@ -16,10 +16,12 @@ namespace PresentationDesktopApp
     public partial class frmLibraryManagement : Form
     {
         private LibraryContext _context;
-        public frmLibraryManagement(LibraryContext context)
+        string _username;
+        public frmLibraryManagement(LibraryContext context, string username)
         {
             InitializeComponent();
             _context = context;
+            _username = username; //username will have some valid data after the actual user has logged in successfully from Form1
             
         }
 
@@ -92,6 +94,120 @@ namespace PresentationDesktopApp
             var list = booksRepository.GetBooks().ToList();
             //binding to a DataGridView
             dgvBooks.DataSource = list; //binding the (tabular/structured) data with the datagridview
+        }
+
+        private void goBackToLoginToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close(); //this refers to the current instance of the control we are in i.e. Form2 (frmLibraryManagement)
+           
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit(); //this exists the entire application
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var ctrl in this.Controls) //foreach control in this form
+            {
+                if (ctrl.GetType() == typeof(GroupBox)) //if it is a GroupBox (and not anything else)
+                {
+                    ((GroupBox)ctrl).Visible = false; //typecasting/converting the ctrl into a GroupBox
+                                                      //and hide it
+                }
+            }
+            grpDelete.Location = new Point(663, 62);
+            grpDelete.Visible = true; //unhide that groupbox and its contents
+            grpListOfBooks.Visible = true;
+
+        }
+
+        private void dgvBooks_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvBooks.SelectedRows.Count == 1)
+            {
+                string isbn = dgvBooks.SelectedRows[0].Cells["Isbn"].Value.ToString();
+
+                txtIsbnToDelete.Text = isbn;
+                btnDeleteBook.Enabled = true;
+            }
+        }
+
+        private void btnDeleteBook_Click(object sender, EventArgs e)
+        {
+            BooksRepository booksRepository = new BooksRepository(_context);
+            booksRepository.DeleteBook(Convert.ToInt32(txtIsbnToDelete.Text));
+
+            MessageBox.Show("Deleted book successfully!");
+
+            RefreshList();
+
+            txtIsbnToDelete.Clear(); btnDeleteBook.Enabled = false;
+        }
+
+        private void btnReserveBook_Click(object sender, EventArgs e)
+        {
+            ReservationsRepository reservationsRepository = new ReservationsRepository(_context);
+
+            Reservation myReservation = new Reservation();
+            myReservation.BookFK = Convert.ToInt32(txtIsbnToReserve.Text);
+            myReservation.From = dtpReserveFrom.Value;
+            myReservation.Days = Convert.ToInt32(nudDays.Value);
+            myReservation.UsernameFK = _username;
+
+            reservationsRepository.AddReservation(myReservation);
+
+            MessageBox.Show("Reservation placed successfully!");
+
+
+        }
+
+        private void addToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            foreach (var ctrl in this.Controls) //foreach control in this form
+            {
+                if (ctrl.GetType() == typeof(GroupBox)) //if it is a GroupBox (and not anything else)
+                {
+                    ((GroupBox)ctrl).Visible = false; //typecasting/converting the ctrl into a GroupBox
+                                                      //and hide it
+                }
+            }
+            grpAddReservation.Location = new Point(663, 62);
+            grpAddReservation.Visible = true; //unhide that groupbox and its contents
+            grpListOfBooks.Visible = true;
+        }
+
+        private void historyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var ctrl in this.Controls) //foreach control in this form
+            {
+                if (ctrl.GetType() == typeof(GroupBox)) //if it is a GroupBox (and not anything else)
+                {
+                    ((GroupBox)ctrl).Visible = false; //typecasting/converting the ctrl into a GroupBox
+                                                      //and hide it
+                }
+            }
+
+            grpHistory.Visible = true;
+            grpHistory.Location = new Point(60, 45);
+
+            //get the reservations
+
+            ReservationsRepository reservationsRepository = new ReservationsRepository(_context);
+            var list = reservationsRepository.GetReservations(_username);
+
+            //to eliminate showing navigational properties
+            var displayList = from r in list
+                              select new
+                              {
+                                  Isbn = r.BookFK,
+                                  Book = r.Book.Title,
+                                  From = r.From.ToShortDateString(),
+                                  To = r.From.AddDays(r.Days).ToShortDateString()
+                              };
+
+            dgvHistory.DataSource = displayList.ToList();
         }
     }
 }

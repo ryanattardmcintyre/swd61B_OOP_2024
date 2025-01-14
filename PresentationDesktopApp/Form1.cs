@@ -48,7 +48,7 @@ namespace PresentationDesktopApp
                 //passing the _libraryContext passed from the Main, will keep consistency in using
                 //the same database object
 
-                frmLibraryManagement frmLibraryManagement = new frmLibraryManagement(_libraryContext);
+                frmLibraryManagement frmLibraryManagement = new frmLibraryManagement(_libraryContext, txtUsername.Text);
                 frmLibraryManagement.Show();
 
             }

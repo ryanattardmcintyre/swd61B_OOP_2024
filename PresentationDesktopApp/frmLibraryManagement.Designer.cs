@@ -40,6 +40,7 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reservationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.historyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpAddBook = new System.Windows.Forms.GroupBox();
             this.btnAddBook = new System.Windows.Forms.Button();
             this.cmbCategory = new System.Windows.Forms.ComboBox();
@@ -52,10 +53,29 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtIsbn = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.grpDelete = new System.Windows.Forms.GroupBox();
+            this.btnDeleteBook = new System.Windows.Forms.Button();
+            this.txtIsbnToDelete = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.grpAddReservation = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.nudDays = new System.Windows.Forms.NumericUpDown();
+            this.btnReserveBook = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.dtpReserveFrom = new System.Windows.Forms.DateTimePicker();
+            this.txtIsbnToReserve = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.grpHistory = new System.Windows.Forms.GroupBox();
+            this.dgvHistory = new System.Windows.Forms.DataGridView();
             this.grpListOfBooks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.grpAddBook.SuspendLayout();
+            this.grpDelete.SuspendLayout();
+            this.grpAddReservation.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDays)).BeginInit();
+            this.grpHistory.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).BeginInit();
             this.SuspendLayout();
             // 
             // grpListOfBooks
@@ -78,6 +98,7 @@
             this.dgvBooks.RowTemplate.Height = 29;
             this.dgvBooks.Size = new System.Drawing.Size(483, 484);
             this.dgvBooks.TabIndex = 0;
+            this.dgvBooks.SelectionChanged += new System.EventHandler(this.dgvBooks_SelectionChanged);
             // 
             // menuStrip1
             // 
@@ -88,7 +109,7 @@
             this.reservationsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1422, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1307, 28);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -106,12 +127,14 @@
             this.goBackToLoginToolStripMenuItem.Name = "goBackToLoginToolStripMenuItem";
             this.goBackToLoginToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
             this.goBackToLoginToolStripMenuItem.Text = "Go Back to Login";
+            this.goBackToLoginToolStripMenuItem.Click += new System.EventHandler(this.goBackToLoginToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // booksToolStripMenuItem
             // 
@@ -142,11 +165,13 @@
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(136, 26);
             this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // reservationsToolStripMenuItem
             // 
             this.reservationsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem1});
+            this.addToolStripMenuItem1,
+            this.historyToolStripMenuItem});
             this.reservationsToolStripMenuItem.Name = "reservationsToolStripMenuItem";
             this.reservationsToolStripMenuItem.Size = new System.Drawing.Size(106, 24);
             this.reservationsToolStripMenuItem.Text = "Reservations";
@@ -154,8 +179,16 @@
             // addToolStripMenuItem1
             // 
             this.addToolStripMenuItem1.Name = "addToolStripMenuItem1";
-            this.addToolStripMenuItem1.Size = new System.Drawing.Size(120, 26);
+            this.addToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
             this.addToolStripMenuItem1.Text = "Add";
+            this.addToolStripMenuItem1.Click += new System.EventHandler(this.addToolStripMenuItem1_Click);
+            // 
+            // historyToolStripMenuItem
+            // 
+            this.historyToolStripMenuItem.Name = "historyToolStripMenuItem";
+            this.historyToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.historyToolStripMenuItem.Text = "History";
+            this.historyToolStripMenuItem.Click += new System.EventHandler(this.historyToolStripMenuItem_Click);
             // 
             // grpAddBook
             // 
@@ -269,11 +302,165 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Isbn";
             // 
+            // grpDelete
+            // 
+            this.grpDelete.Controls.Add(this.btnDeleteBook);
+            this.grpDelete.Controls.Add(this.txtIsbnToDelete);
+            this.grpDelete.Controls.Add(this.label6);
+            this.grpDelete.Location = new System.Drawing.Point(669, 415);
+            this.grpDelete.Name = "grpDelete";
+            this.grpDelete.Size = new System.Drawing.Size(494, 166);
+            this.grpDelete.TabIndex = 3;
+            this.grpDelete.TabStop = false;
+            this.grpDelete.Text = "Delete a Book";
+            this.grpDelete.Visible = false;
+            // 
+            // btnDeleteBook
+            // 
+            this.btnDeleteBook.Enabled = false;
+            this.btnDeleteBook.Location = new System.Drawing.Point(283, 109);
+            this.btnDeleteBook.Name = "btnDeleteBook";
+            this.btnDeleteBook.Size = new System.Drawing.Size(131, 29);
+            this.btnDeleteBook.TabIndex = 4;
+            this.btnDeleteBook.Text = "Delete Book";
+            this.btnDeleteBook.UseVisualStyleBackColor = true;
+            this.btnDeleteBook.Click += new System.EventHandler(this.btnDeleteBook_Click);
+            // 
+            // txtIsbnToDelete
+            // 
+            this.txtIsbnToDelete.Location = new System.Drawing.Point(146, 55);
+            this.txtIsbnToDelete.Name = "txtIsbnToDelete";
+            this.txtIsbnToDelete.Size = new System.Drawing.Size(268, 27);
+            this.txtIsbnToDelete.TabIndex = 3;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(40, 55);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(36, 20);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Isbn";
+            // 
+            // grpAddReservation
+            // 
+            this.grpAddReservation.Controls.Add(this.label9);
+            this.grpAddReservation.Controls.Add(this.nudDays);
+            this.grpAddReservation.Controls.Add(this.btnReserveBook);
+            this.grpAddReservation.Controls.Add(this.label8);
+            this.grpAddReservation.Controls.Add(this.dtpReserveFrom);
+            this.grpAddReservation.Controls.Add(this.txtIsbnToReserve);
+            this.grpAddReservation.Controls.Add(this.label7);
+            this.grpAddReservation.Location = new System.Drawing.Point(669, 630);
+            this.grpAddReservation.Name = "grpAddReservation";
+            this.grpAddReservation.Size = new System.Drawing.Size(600, 281);
+            this.grpAddReservation.TabIndex = 4;
+            this.grpAddReservation.TabStop = false;
+            this.grpAddReservation.Text = "Add a reservation";
+            this.grpAddReservation.Visible = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(42, 167);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(116, 20);
+            this.label9.TabIndex = 10;
+            this.label9.Text = "How Many Days";
+            // 
+            // nudDays
+            // 
+            this.nudDays.Location = new System.Drawing.Point(206, 167);
+            this.nudDays.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudDays.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudDays.Name = "nudDays";
+            this.nudDays.Size = new System.Drawing.Size(268, 27);
+            this.nudDays.TabIndex = 9;
+            this.nudDays.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // btnReserveBook
+            // 
+            this.btnReserveBook.Location = new System.Drawing.Point(318, 229);
+            this.btnReserveBook.Name = "btnReserveBook";
+            this.btnReserveBook.Size = new System.Drawing.Size(156, 29);
+            this.btnReserveBook.TabIndex = 8;
+            this.btnReserveBook.Text = "Reserve a Book";
+            this.btnReserveBook.UseVisualStyleBackColor = true;
+            this.btnReserveBook.Click += new System.EventHandler(this.btnReserveBook_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(40, 112);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(134, 20);
+            this.label8.TabIndex = 7;
+            this.label8.Text = "Reserve From Date";
+            // 
+            // dtpReserveFrom
+            // 
+            this.dtpReserveFrom.Location = new System.Drawing.Point(206, 112);
+            this.dtpReserveFrom.Name = "dtpReserveFrom";
+            this.dtpReserveFrom.Size = new System.Drawing.Size(270, 27);
+            this.dtpReserveFrom.TabIndex = 6;
+            // 
+            // txtIsbnToReserve
+            // 
+            this.txtIsbnToReserve.Location = new System.Drawing.Point(206, 50);
+            this.txtIsbnToReserve.Name = "txtIsbnToReserve";
+            this.txtIsbnToReserve.Size = new System.Drawing.Size(270, 27);
+            this.txtIsbnToReserve.TabIndex = 5;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(39, 50);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(36, 20);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "Isbn";
+            // 
+            // grpHistory
+            // 
+            this.grpHistory.Controls.Add(this.dgvHistory);
+            this.grpHistory.Location = new System.Drawing.Point(28, 637);
+            this.grpHistory.Name = "grpHistory";
+            this.grpHistory.Size = new System.Drawing.Size(601, 377);
+            this.grpHistory.TabIndex = 5;
+            this.grpHistory.TabStop = false;
+            this.grpHistory.Text = "History Of Reservations";
+            this.grpHistory.Visible = false;
+            // 
+            // dgvHistory
+            // 
+            this.dgvHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvHistory.Location = new System.Drawing.Point(34, 48);
+            this.dgvHistory.Name = "dgvHistory";
+            this.dgvHistory.RowHeadersWidth = 51;
+            this.dgvHistory.RowTemplate.Height = 29;
+            this.dgvHistory.Size = new System.Drawing.Size(510, 298);
+            this.dgvHistory.TabIndex = 0;
+            // 
             // frmLibraryManagement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1422, 692);
+            this.ClientSize = new System.Drawing.Size(1307, 1026);
+            this.Controls.Add(this.grpHistory);
+            this.Controls.Add(this.grpAddReservation);
+            this.Controls.Add(this.grpDelete);
             this.Controls.Add(this.grpAddBook);
             this.Controls.Add(this.grpListOfBooks);
             this.Controls.Add(this.menuStrip1);
@@ -287,6 +474,13 @@
             this.menuStrip1.PerformLayout();
             this.grpAddBook.ResumeLayout(false);
             this.grpAddBook.PerformLayout();
+            this.grpDelete.ResumeLayout(false);
+            this.grpDelete.PerformLayout();
+            this.grpAddReservation.ResumeLayout(false);
+            this.grpAddReservation.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDays)).EndInit();
+            this.grpHistory.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -318,5 +512,20 @@
         private Label label3;
         private TextBox txtTitle;
         private Label label2;
+        private ToolStripMenuItem historyToolStripMenuItem;
+        private GroupBox grpDelete;
+        private Button btnDeleteBook;
+        private TextBox txtIsbnToDelete;
+        private Label label6;
+        private GroupBox grpAddReservation;
+        private Button btnReserveBook;
+        private Label label8;
+        private DateTimePicker dtpReserveFrom;
+        private TextBox txtIsbnToReserve;
+        private Label label7;
+        private Label label9;
+        private NumericUpDown nudDays;
+        private GroupBox grpHistory;
+        private DataGridView dgvHistory;
     }
 }
